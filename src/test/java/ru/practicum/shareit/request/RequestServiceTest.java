@@ -86,7 +86,7 @@ class RequestServiceTest {
         );
 
         when(userService.getById(userId)).thenReturn(user);
-        when(itemRepository.findAllByRequestId(anyLong())).thenReturn(Collections.emptyList());
+        when(itemRepository.findAllWithRequestId()).thenReturn(Collections.emptyList());
         when(requestRepository.findAllByUserIdOrderByCreatedDesc(anyLong())).thenReturn(requests);
 
         assertThat(requestService.getOwnRequests(userId)).isEqualTo(requests
@@ -106,7 +106,7 @@ class RequestServiceTest {
         );
 
         when(userService.getById(userId)).thenReturn(user);
-        when(itemRepository.findAllByRequestId(anyLong())).thenReturn(Collections.emptyList());
+        when(itemRepository.findAllWithRequestId()).thenReturn(Collections.emptyList());
         when(requestRepository.findAllByUserIdIsNotOrderByCreatedDesc(anyLong(), any())).thenReturn(requests);
 
         assertThat(requestService.getOtherRequests(userId, null)).isEqualTo(requests
