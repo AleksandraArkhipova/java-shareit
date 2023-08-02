@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.comment;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -7,8 +7,6 @@ import ru.practicum.shareit.user.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,26 +23,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Booking {
+public class Comment {
     @Id
-    @Column(name = "booking_id")
+    @Column(name = "comment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    long id;
 
-    @Column(name = "start_time")
-    LocalDateTime start;
-
-    @Column(name = "end_time")
-    LocalDateTime end;
+    String text;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
     Item item;
 
     @ManyToOne
-    @JoinColumn(name = "booker_id")
-    User booker;
+    @JoinColumn(name = "author_id")
+    User author;
 
-    @Enumerated(EnumType.STRING)
-    BookingStatus status;
+    LocalDateTime created;
 }
