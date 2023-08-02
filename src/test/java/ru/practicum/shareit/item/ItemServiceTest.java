@@ -64,11 +64,11 @@ class ItemServiceTest {
     BookingMapper bookingMapper = Mappers.getMapper(BookingMapper.class);
 
     @InjectMocks
-    ItemService itemService;
+    ItemService service;
 
     @Test
     void search_shouldReturnEmptyListIfTextIsBlank() {
-        assertThat(itemService.searchByText("", null)).isEmpty();
+        assertThat(service.searchByText("", null)).isEmpty();
     }
 
     @Test
@@ -84,14 +84,14 @@ class ItemServiceTest {
                 .collect(Collectors.toList());
 
         when(repo.findAllByText(anyString(), any())).thenReturn(items);
-        assertThat(itemService.searchByText("text", null)).isEqualTo(listOfItemDto);
+        assertThat(service.searchByText("text", null)).isEqualTo(listOfItemDto);
     }
 
     @Test
     void create_shouldThrowNotFoundExceptionIfUserIsNotExists() {
         long userId = 1;
         when(userService.getById(userId)).thenThrow(NotFoundException.class);
-        assertThatThrownBy(() -> itemService.create(userId, null)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.create(userId, null)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -106,7 +106,7 @@ class ItemServiceTest {
         when(requestRepo.findById(userId)).thenReturn(Optional.of(request));
         when(repo.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
-        ItemDto itemDto = itemService.create(userId, createItemDto);
+        ItemDto itemDto = service.create(userId, createItemDto);
 
         assertThat(itemDto.getRequestId()).isEqualTo(requestId);
         assertThat(itemDto.getAvailable()).isTrue();
@@ -121,7 +121,7 @@ class ItemServiceTest {
 
         when(userService.getById(userId)).thenThrow(NotFoundException.class);
 
-        assertThatThrownBy(() -> itemService.update(itemId, userId, null)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.update(itemId, userId, null)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -131,7 +131,7 @@ class ItemServiceTest {
 
         when(repo.findById(itemId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> itemService.update(itemId, userId, null)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.update(itemId, userId, null)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -146,7 +146,7 @@ class ItemServiceTest {
         when(repo.findById(itemId)).thenReturn(Optional.of(item));
         when(repo.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
-        ItemDto itemDto = itemService.update(itemId, userId, updateItemDto);
+        ItemDto itemDto = service.update(itemId, userId, updateItemDto);
 
         assertThat(itemDto.getName()).isEqualTo("new name");
     }
@@ -163,7 +163,7 @@ class ItemServiceTest {
         when(repo.findById(itemId)).thenReturn(Optional.of(item));
         when(repo.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
-        ItemDto itemDto = itemService.update(itemId, userId, updateItemDto);
+        ItemDto itemDto = service.update(itemId, userId, updateItemDto);
 
         assertThat(itemDto.getDescription()).isEqualTo("new description");
     }
@@ -180,7 +180,7 @@ class ItemServiceTest {
         when(repo.findById(itemId)).thenReturn(Optional.of(item));
         when(repo.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
-        ItemDto itemDto = itemService.update(itemId, userId, updateItemDto);
+        ItemDto itemDto = service.update(itemId, userId, updateItemDto);
 
         assertThat(itemDto.getAvailable()).isFalse();
     }
@@ -202,7 +202,7 @@ class ItemServiceTest {
         )).thenReturn(List.of(new Booking(1L, LocalDateTime.now(), LocalDateTime.now(), item, user, BookingStatus.APPROVED)));
         when(commentRepo.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
-        CommentDto commentDto = itemService.comment(itemId, userId, createCommentDto);
+        CommentDto commentDto = service.comment(itemId, userId, createCommentDto);
 
         assertThat(commentDto.getAuthorName()).isEqualTo(user.getName());
     }
@@ -226,6 +226,24 @@ class ItemServiceTest {
         when(bookingRepo.findAllByItemIdOrderByStartAsc(anyLong())).thenReturn(Collections.emptyList());
         when(commentRepo.findAllByItemId(anyLong())).thenReturn(Collections.emptyList());
 
-        assertThat(itemService.getById(itemId, userId)).isEqualTo(mapper.toItemDto(item));
+        assertThat(service.getById(itemId, userId)).isEqualTo(mapper.toItemDto(item));
+    }
+
+    @Test
+    void getByUserId_should() {
+        User user = TestUtils.makeUser(1L);
+        User user2 = TestUtils.makeUser(2L);
+
+        List<Item> items = List.of(TestUtils.makeItem(1L, true, user),
+                TestUtils.makeItem(2L, true, user));
+
+        List<ItemDto> listOfItemDto = items.stream()
+                .map(mapper::toItemDto)
+                .collect(Collectors.toList());
+
+        when(repo.findAllByOwnerId(1L, null)).thenReturn(items);
+
+        assertThat(service.getByUserId(1L, null)).hasAtLeastOneElementOfType(ItemDto.class);
+
     }
 }

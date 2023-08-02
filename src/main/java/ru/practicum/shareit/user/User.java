@@ -10,6 +10,7 @@ import javax.validation.constraints.PositiveOrZero;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode //нужен для прохождения тестов
 @Builder
 @Entity
 @Table(name = "users")

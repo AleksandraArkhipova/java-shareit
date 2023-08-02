@@ -4,6 +4,7 @@ import lombok.*;
 
 @Getter
 @EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateItemDto {

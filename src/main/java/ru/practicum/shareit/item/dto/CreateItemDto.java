@@ -9,6 +9,7 @@ import javax.validation.constraints.Positive;
 @Getter
 @Builder
 @EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateItemDto {
