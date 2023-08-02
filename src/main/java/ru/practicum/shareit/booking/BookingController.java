@@ -26,7 +26,7 @@ import java.util.List;
 @RequestMapping(path = "/bookings")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookingController {
-    private final static String USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
     BookingService bookingService;
 
     @GetMapping

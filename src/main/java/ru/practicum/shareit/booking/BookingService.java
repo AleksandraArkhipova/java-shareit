@@ -98,7 +98,7 @@ public class BookingService {
             throw new NotFoundException("booking", item.getId());
         }
 
-        Booking booking = mapper.ToBooking(dto);
+        Booking booking = mapper.toBooking(dto);
 
         boolean isStartInPast = booking.getStart().isBefore(LocalDateTime.now());
         boolean isEndInPast = booking.getEnd().isBefore(LocalDateTime.now());

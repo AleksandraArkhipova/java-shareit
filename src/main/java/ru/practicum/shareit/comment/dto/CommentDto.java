@@ -1,7 +1,6 @@
 package ru.practicum.shareit.comment.dto;
 
 import lombok.*;
-import net.bytebuddy.implementation.bind.annotation.BindingPriority;
 
 import java.time.LocalDateTime;
 

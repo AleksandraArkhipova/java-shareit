@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ExtendWith(MockitoExtension.class)
 class BookingControllerTest {
-    static final String USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
     final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     MockMvc mockMvc;
 
