@@ -91,7 +91,7 @@ class RequestServiceTest {
 
         assertThat(requestService.getOwnRequests(userId)).isEqualTo(requests
                 .stream()
-                .map(requestMapper::requestToRequestDto)
+                .map(requestMapper::toRequestDto)
                 .peek(requestDto -> requestDto.setItems(Collections.emptyList())).collect(Collectors.toList()));
     }
 
@@ -111,7 +111,7 @@ class RequestServiceTest {
 
         assertThat(requestService.getOtherRequests(userId, null)).isEqualTo(requests
                 .stream()
-                .map(requestMapper::requestToRequestDto)
+                .map(requestMapper::toRequestDto)
                 .peek(requestDto -> requestDto.setItems(Collections.emptyList())).collect(Collectors.toList()));
     }
 
@@ -121,7 +121,7 @@ class RequestServiceTest {
         long userId = 1;
         User user = TestUtils.makeUser(userId);
         Request request = TestUtils.makeRequest(1, LocalDateTime.now(), user);
-        RequestDto requestDto = requestMapper.requestToRequestDto(request);
+        RequestDto requestDto = requestMapper.toRequestDto(request);
         requestDto.setItems(Collections.emptyList());
 
         when(userService.getById(userId)).thenReturn(user);
