@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ItemJpaRepository extends JpaRepository<Item, Long> {
-    List<Item> findAllByOwnerId(@Param("ownerId") Long ownerId, Pageable pageable);
+    List<Item> findAllByOwnerId(Long ownerId, Pageable pageable);
 
     @Query(value = "select i " +
             "from Item i " +
@@ -18,7 +18,7 @@ public interface ItemJpaRepository extends JpaRepository<Item, Long> {
             "and i.available is true")
     List<Item> findAllByText(@Param("text") String text, Pageable pageable);
 
-    List<Item> findAllByRequestId(@Param("requestId")long requestId);
+    List<Item> findAllByRequestId(long requestId);
 
     @Query("select i " +
             "from Item i " +
