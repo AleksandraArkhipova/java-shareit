@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.core.exception.FieldValidationException;
 import ru.practicum.shareit.core.exception.NotFoundException;
 import ru.practicum.shareit.utils.TestUtils;
 import ru.practicum.shareit.booking.Booking;
@@ -102,6 +103,8 @@ class ItemServiceTest {
         Request request = TestUtils.makeRequest(requestId, LocalDateTime.now(), user);
         CreateItemDto createItemDto = TestUtils.makeCreateItemDto(true, requestId);
 
+        assertThatThrownBy(() -> service.create(userId, createItemDto))
+                .isInstanceOf(NotFoundException.class);
         when(userService.getById(userId)).thenReturn(user);
         when(requestRepo.findById(userId)).thenReturn(Optional.of(request));
         when(repo.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
@@ -118,9 +121,17 @@ class ItemServiceTest {
     void update_shouldThrowNotFoundExceptionIfUserIsNotExists() {
         long itemId = 1L;
         long userId = 1L;
+        User user = TestUtils.makeUser(userId);
+        User user2 = TestUtils.makeUser(2L);
+        Item item = TestUtils.makeItem(itemId, true, user);
+        UpdateItemDto updateItemDto = new UpdateItemDto("name", "description", true);
+
+        when(userService.getById(userId)).thenReturn(user);
+        when(userService.getById(user2.getId())).thenReturn(user2);
+        when(repo.findById(itemId)).thenReturn(Optional.of(item));
+        assertThatThrownBy(() -> service.update(itemId, user2.getId(), updateItemDto)).isInstanceOf(NotFoundException.class);
 
         when(userService.getById(userId)).thenThrow(NotFoundException.class);
-
         assertThatThrownBy(() -> service.update(itemId, userId, null)).isInstanceOf(NotFoundException.class);
     }
 
@@ -196,23 +207,38 @@ class ItemServiceTest {
         when(userService.getById(userId)).thenReturn(user);
         when(repo.findById(itemId)).thenReturn(Optional.of(item));
         when(bookingRepo.findAllByBookerIdAndEndBeforeOrderByStartDesc(
-                anyLong(),
-                any(),
-                any()
-        )).thenReturn(List.of(new Booking(1L, LocalDateTime.now(), LocalDateTime.now(), item, user, BookingStatus.APPROVED)));
+                anyLong(), any(), any()
+        )).thenReturn(Collections.emptyList());
         when(commentRepo.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
-        CommentDto commentDto = service.comment(itemId, userId, createCommentDto);
+        assertThatThrownBy(() -> service.comment(itemId, userId, createCommentDto))
+                .isInstanceOf(FieldValidationException.class);
 
+        when(bookingRepo.findAllByBookerIdAndEndBeforeOrderByStartDesc(anyLong(), any(), any()
+        )).thenReturn(List.of(
+                new Booking(1L, LocalDateTime.now(), LocalDateTime.now(), item, user, BookingStatus.APPROVED)));
+
+        CommentDto commentDto = service.comment(itemId, userId, createCommentDto);
         assertThat(commentDto.getAuthorName()).isEqualTo(user.getName());
+        assertThat(commentDto.getId()).isEqualTo(0L);
+        assertThat(commentDto.getText()).isEqualTo("new comment");
     }
 
     @Test
-    void delete_shouldDeleteItemAndReturnDeletedItem() {
+    void delete_shouldDeleteItemAndReturnDeletedItem_should() {
+        long itemId = 1L;
+        long userId = 1L;
         User user = TestUtils.makeUser(1L);
         Item item = TestUtils.makeItem(1L, true, user);
         repo.delete(item);
+
         verify(repo, times(1)).delete(item);
+
+        when(repo.findById(itemId)).thenReturn(Optional.of(item));
+        when(repo.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
+        ItemDto itemDto = service.delete(itemId);
+
+        assertThat(itemDto.getId().equals(itemId));
     }
 
     @Test
@@ -232,14 +258,8 @@ class ItemServiceTest {
     @Test
     void getByUserId_should() {
         User user = TestUtils.makeUser(1L);
-        User user2 = TestUtils.makeUser(2L);
-
         List<Item> items = List.of(TestUtils.makeItem(1L, true, user),
                 TestUtils.makeItem(2L, true, user));
-
-        List<ItemDto> listOfItemDto = items.stream()
-                .map(mapper::toItemDto)
-                .collect(Collectors.toList());
 
         when(repo.findAllByOwnerId(1L, null)).thenReturn(items);
 

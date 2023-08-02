@@ -21,6 +21,7 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -45,98 +46,98 @@ class BookingServiceTest {
     ItemJpaRepository itemRepo;
 
     @InjectMocks
-    BookingService bookingService;
+    BookingService service;
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdOrderByStartDesc() {
-        bookingService.getAllByBooker(1L, "ALL", null);
+        service.getAllByBooker(1L, "ALL", null);
         verify(repo).findAllByBookerIdOrderByStartDesc(anyLong(), any());
     }
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc() {
-        bookingService.getAllByBooker(1L, "CURRENT", null);
+        service.getAllByBooker(1L, "CURRENT", null);
         verify(repo)
                 .findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(anyLong(), any(), any(), any());
     }
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndEndBeforeOrderByStartDesc() {
-        bookingService.getAllByBooker(1L, "PAST", null);
+        service.getAllByBooker(1L, "PAST", null);
         verify(repo)
                 .findAllByBookerIdAndEndBeforeOrderByStartDesc(anyLong(), any(), any());
     }
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStartAfterOrderByStartDesc() {
-        bookingService.getAllByBooker(1L, "FUTURE", null);
+        service.getAllByBooker(1L, "FUTURE", null);
         verify(repo)
                 .findAllByBookerIdAndStartAfterOrderByStartDesc(anyLong(), any(), any());
     }
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStatusOrderByStartDescWithStatusWaiting() {
-        bookingService.getAllByBooker(1L, "WAITING", null);
+        service.getAllByBooker(1L, "WAITING", null);
         verify(repo)
                 .findAllByBookerIdAndStatusOrderByStartDesc(1, BookingStatus.WAITING, null);
     }
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStatusOrderByStartDescWithStatusRejected() {
-        bookingService.getAllByBooker(1L, "REJECTED", null);
+        service.getAllByBooker(1L, "REJECTED", null);
         verify(repo)
                 .findAllByBookerIdAndStatusOrderByStartDesc(1L, BookingStatus.REJECTED, null);
     }
 
     @Test
     void getAllByBooker_shouldThrowUnsupportedStatusException() {
-        assertThatThrownBy(() -> bookingService.getAllByBooker(1L, "ANY", null)).isInstanceOf(UnsupportedStatusException.class);
+        assertThatThrownBy(() -> service.getAllByBooker(1L, "ANY", null)).isInstanceOf(UnsupportedStatusException.class);
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdOrderByStartDesc() {
-        bookingService.getAllByOwner(1L, "ALL", null);
+        service.getAllByOwner(1L, "ALL", null);
         verify(repo).findAllByItemOwnerIdOrderByStartDesc(anyLong(), any());
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc() {
-        bookingService.getAllByOwner(1L, "CURRENT", null);
+        service.getAllByOwner(1L, "CURRENT", null);
         verify(repo)
                 .findAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(anyLong(), any(), any(), any());
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndEndBeforeOrderByStartDesc() {
-        bookingService.getAllByOwner(1L, "PAST", null);
+        service.getAllByOwner(1L, "PAST", null);
         verify(repo)
                 .findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(anyLong(), any(), any());
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStartAfterOrderByStartDesc() {
-        bookingService.getAllByOwner(1L, "FUTURE", null);
+        service.getAllByOwner(1L, "FUTURE", null);
         verify(repo)
                 .findAllByItemOwnerIdAndStartAfterOrderByStartDesc(anyLong(), any(), any());
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStatusOrderByStartDescWithStatusWaiting() {
-        bookingService.getAllByOwner(1L, "WAITING", null);
+        service.getAllByOwner(1L, "WAITING", null);
         verify(repo)
                 .findAllByItemOwnerIdAndStatusOrderByStartDesc(1, BookingStatus.WAITING, null);
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStatusOrderByStartDescWithStatusRejected() {
-        bookingService.getAllByOwner(1L, "REJECTED", null);
+        service.getAllByOwner(1L, "REJECTED", null);
         verify(repo)
                 .findAllByItemOwnerIdAndStatusOrderByStartDesc(1, BookingStatus.REJECTED, null);
     }
 
     @Test
     void getAllByOwner_shouldThrowUnsupportedStatusException() {
-        assertThatThrownBy(() -> bookingService.getAllByOwner(1L, "ANY", null)).isInstanceOf(UnsupportedStatusException.class);
+        assertThatThrownBy(() -> service.getAllByOwner(1L, "ANY", null)).isInstanceOf(UnsupportedStatusException.class);
     }
 
     @Test
@@ -147,7 +148,7 @@ class BookingServiceTest {
 
         when(userService.getById(userId)).thenThrow(new NotFoundException("user", userId));
 
-        assertThatThrownBy(() -> bookingService.create(userId, dto)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.create(userId, dto)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -158,7 +159,7 @@ class BookingServiceTest {
 
         when(itemRepo.findById(itemId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> bookingService.create(userId, dto)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.create(userId, dto)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -170,7 +171,7 @@ class BookingServiceTest {
 
         when(itemRepo.findById(itemId)).thenReturn(Optional.of(item));
 
-        assertThatThrownBy(() -> bookingService.create(userId, dto)).isInstanceOf(FieldValidationException.class);
+        assertThatThrownBy(() -> service.create(userId, dto)).isInstanceOf(FieldValidationException.class);
     }
 
     @Test
@@ -183,7 +184,7 @@ class BookingServiceTest {
 
         when(itemRepo.findById(itemId)).thenReturn(Optional.of(item));
 
-        assertThatThrownBy(() -> bookingService.create(userId, dto)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.create(userId, dto)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -196,23 +197,40 @@ class BookingServiceTest {
 
         when(itemRepo.findById(itemId)).thenReturn(Optional.of(item));
 
-        assertThatThrownBy(() -> bookingService.create(userId, dto)).isInstanceOf(FieldValidationException.class);
+        assertThatThrownBy(() -> service.create(userId, dto)).isInstanceOf(FieldValidationException.class);
     }
 
     @Test
     void create_shouldCreateBooking() {
         long userId = 1L;
         long itemId = 1L;
+
         BookingDto dto = new BookingDto(itemId, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2));
+        BookingDto dto2 = new BookingDto(itemId, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4));
+        BookingDto dto3 = new BookingDto(itemId, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4));
+
         User user = TestUtils.makeUser(2L);
         Item item = TestUtils.makeItem(itemId, true, user);
 
         when(itemRepo.findById(itemId)).thenReturn(Optional.of(item));
+        when(userService.getById(userId)).thenReturn(user);
         when(repo.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
-        Booking booking = bookingService.create(userId, dto);
+        Booking booking = service.create(userId, dto);
+        verify(repo, times(1)).save(booking);
 
-        assertThat(booking).hasFieldOrProperty("id");
+        Booking booking2 = service.create(userId, dto2);
+        verify(repo, times(1)).save(booking2);
+
+        List<Booking> bookings = List.of(booking, booking2);
+        when(itemService.getAllBookings(itemId)).thenReturn(bookings);
+        assertThatThrownBy(() -> service.create(userId, dto3)).isInstanceOf(FieldValidationException.class);
+        BookingDto dto4 = new BookingDto(itemId, LocalDateTime.now().plusDays(5), LocalDateTime.now().plusDays(6));
+        Booking booking4 = service.create(userId, dto4);
+
+        assertThat(booking4).isInstanceOf(Booking.class);
+        assertThat(booking4).hasFieldOrProperty("id");
+
     }
 
     @Test
@@ -222,7 +240,7 @@ class BookingServiceTest {
 
         when(repo.findById(bookingId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> bookingService.update(bookingId, userId, true)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.update(bookingId, userId, true)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -236,7 +254,7 @@ class BookingServiceTest {
 
         when(repo.findById(bookingId)).thenReturn(Optional.of(booking));
 
-        assertThatThrownBy(() -> bookingService.update(bookingId, 2L, true)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.update(bookingId, 2L, true)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -250,7 +268,7 @@ class BookingServiceTest {
 
         when(repo.findById(bookingId)).thenReturn(Optional.of(booking));
 
-        assertThatThrownBy(() -> bookingService.update(bookingId, userId, true)).isInstanceOf(FieldValidationException.class);
+        assertThatThrownBy(() -> service.update(bookingId, userId, true)).isInstanceOf(FieldValidationException.class);
     }
 
     @Test
@@ -265,7 +283,7 @@ class BookingServiceTest {
         when(repo.findById(bookingId)).thenReturn(Optional.of(booking));
         when(repo.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
-        booking = bookingService.update(bookingId, userId, true);
+        booking = service.update(bookingId, userId, true);
 
         assertThat(booking.getStatus()).isEqualTo(BookingStatus.APPROVED);
     }
@@ -277,7 +295,7 @@ class BookingServiceTest {
 
         when(repo.findById(bookingId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> bookingService.getById(bookingId, userId)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.getById(bookingId, userId)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -292,7 +310,7 @@ class BookingServiceTest {
 
         when(repo.findById(bookingId)).thenReturn(Optional.of(booking));
 
-        assertThatThrownBy(() -> bookingService.getById(bookingId, 2L)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.getById(bookingId, 2L)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -307,6 +325,6 @@ class BookingServiceTest {
 
         when(repo.findById(bookingId)).thenReturn(Optional.of(booking));
 
-        assertThat(bookingService.getById(bookingId, userId)).isEqualTo(booking);
+        assertThat(service.getById(bookingId, userId)).isEqualTo(booking);
     }
 }
