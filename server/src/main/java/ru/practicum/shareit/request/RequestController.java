@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,12 +15,10 @@ import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.service.RequestService;
 import ru.practicum.shareit.core.pagination.PaginationMapper;
 
-import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
-@Validated
 @RequiredArgsConstructor
 @RequestMapping("/requests")
 public class RequestController {
@@ -29,7 +28,7 @@ public class RequestController {
     @PostMapping
     public RequestDto createRequest(
             @RequestHeader(name = USER_ID_HEADER) long userId,
-            @Valid @RequestBody CreateRequestDto dto
+            @RequestBody CreateRequestDto dto
     ) {
         return requestService.createRequest(dto, userId);
     }

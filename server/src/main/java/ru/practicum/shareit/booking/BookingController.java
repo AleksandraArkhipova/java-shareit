@@ -3,7 +3,6 @@ package ru.practicum.shareit.booking;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,15 +12,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.CreateBookingDto;
 import ru.practicum.shareit.core.pagination.PaginationMapper;
 
-import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
-@Validated
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -31,8 +28,8 @@ public class BookingController {
 
     @GetMapping
     public List<Booking> getAllByBooker(
-            @RequestHeader(name = USER_ID_HEADER) long bookerId,
-            @RequestParam(defaultValue = "ALL") String state,
+            @RequestHeader(USER_ID_HEADER) long bookerId,
+            @RequestParam(defaultValue = "ALL") BookingState state,
             @PositiveOrZero @RequestParam(required = false) Integer from,
             @PositiveOrZero @RequestParam(required = false) Integer size
     ) {
@@ -41,8 +38,8 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<Booking> getAllByOwner(
-            @RequestHeader(name = USER_ID_HEADER) long ownerId,
-            @RequestParam(defaultValue = "ALL") String state,
+            @RequestHeader(USER_ID_HEADER) long ownerId,
+            @RequestParam(defaultValue = "ALL") BookingState state,
             @PositiveOrZero @RequestParam(required = false) Integer from,
             @PositiveOrZero @RequestParam(required = false) Integer size
     ) {
@@ -50,19 +47,19 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public Booking getById(@PathVariable long bookingId, @RequestHeader(name = USER_ID_HEADER) long userId) {
+    public Booking getById(@PathVariable long bookingId, @RequestHeader(USER_ID_HEADER) long userId) {
         return bookingService.getById(bookingId, userId);
     }
 
     @PostMapping
-    public Booking create(@RequestHeader(name = USER_ID_HEADER) long userId, @Valid @RequestBody BookingDto dto) {
+    public Booking create(@RequestHeader(USER_ID_HEADER) long userId, @RequestBody CreateBookingDto dto) {
         return bookingService.create(userId, dto);
     }
 
     @PatchMapping("/{bookingId}")
     public Booking update(
             @PathVariable long bookingId,
-            @RequestHeader(name = USER_ID_HEADER) long ownerId,
+            @RequestHeader(USER_ID_HEADER) long ownerId,
             @RequestParam boolean approved
     ) {
         return bookingService.update(bookingId, ownerId, approved);

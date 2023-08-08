@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shareit.item;
+package ru.practicum.shareit.item;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.yandex.practicum.shareit.item.dto.CreateCommentDto;
-import ru.yandex.practicum.shareit.item.dto.CreateItemDto;
-import ru.yandex.practicum.shareit.item.dto.UpdateItemDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
+import ru.practicum.shareit.item.dto.CreateItemDto;
+import ru.practicum.shareit.item.dto.UpdateItemDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;

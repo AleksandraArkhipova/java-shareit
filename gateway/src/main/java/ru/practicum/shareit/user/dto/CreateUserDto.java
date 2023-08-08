@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shareit.user.dto;
+package ru.practicum.shareit.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

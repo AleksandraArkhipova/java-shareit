@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.core.exception.NotFoundException;
 import ru.practicum.shareit.core.exception.UnsupportedStatusException;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.CreateBookingDto;
 import ru.practicum.shareit.core.exception.FieldValidationException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemJpaRepository;
@@ -28,42 +28,42 @@ public class BookingService {
     ItemJpaRepository itemRepo;
     ItemService itemService;
 
-    public List<Booking> getAllByBooker(long bookerId, String state, Pageable pageable) {
+    public List<Booking> getAllByBooker(long bookerId, BookingState state, Pageable pageable) {
         userService.getById(bookerId);
 
         switch (state) {
-            case "ALL":
+            case ALL:
                 return repo.findAllByBookerIdOrderByStartDesc(bookerId, pageable);
-            case "CURRENT":
+            case CURRENT:
                 return repo.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(bookerId, LocalDateTime.now(), LocalDateTime.now(), pageable);
-            case "PAST":
+            case PAST:
                 return repo.findAllByBookerIdAndEndBeforeOrderByStartDesc(bookerId, LocalDateTime.now(), pageable);
-            case "FUTURE":
+            case FUTURE:
                 return repo.findAllByBookerIdAndStartAfterOrderByStartDesc(bookerId, LocalDateTime.now(), pageable);
-            case "WAITING":
+            case WAITING:
                 return repo.findAllByBookerIdAndStatusOrderByStartDesc(bookerId, BookingStatus.WAITING, pageable);
-            case "REJECTED":
+            case REJECTED:
                 return repo.findAllByBookerIdAndStatusOrderByStartDesc(bookerId, BookingStatus.REJECTED, pageable);
             default:
                 throw new UnsupportedStatusException();
         }
     }
 
-    public List<Booking> getAllByOwner(long ownerId, String state, Pageable pageable) {
+    public List<Booking> getAllByOwner(long ownerId, BookingState state, Pageable pageable) {
         userService.getById(ownerId);
 
         switch (state) {
-            case "ALL":
+            case ALL:
                 return repo.findAllByItemOwnerIdOrderByStartDesc(ownerId, pageable);
-            case "CURRENT":
+            case CURRENT:
                 return repo.findAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(ownerId, LocalDateTime.now(), LocalDateTime.now(), pageable);
-            case "PAST":
+            case PAST:
                 return repo.findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(ownerId, LocalDateTime.now(), pageable);
-            case "FUTURE":
+            case FUTURE:
                 return repo.findAllByItemOwnerIdAndStartAfterOrderByStartDesc(ownerId, LocalDateTime.now(), pageable);
-            case "WAITING":
+            case WAITING:
                 return repo.findAllByItemOwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.WAITING, pageable);
-            case "REJECTED":
+            case REJECTED:
                 return repo.findAllByItemOwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.REJECTED, pageable);
             default:
                 throw new UnsupportedStatusException();
@@ -83,7 +83,7 @@ public class BookingService {
         return booking;
     }
 
-    public Booking create(long userId, BookingDto dto) {
+    public Booking create(long userId, CreateBookingDto dto) {
 
         User booker = userService.getById(userId);
         Item item = itemRepo.findById(dto.getItemId()).orElseThrow(() -> new NotFoundException("item", dto.getItemId()));

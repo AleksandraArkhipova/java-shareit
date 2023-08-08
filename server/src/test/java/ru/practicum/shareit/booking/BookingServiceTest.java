@@ -10,9 +10,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.core.exception.NotFoundException;
-import ru.practicum.shareit.core.exception.UnsupportedStatusException;
 import ru.practicum.shareit.utils.TestUtils;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.CreateBookingDto;
 import ru.practicum.shareit.core.exception.FieldValidationException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemJpaRepository;
@@ -26,6 +25,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static ru.practicum.shareit.booking.BookingState.*;
+import static ru.practicum.shareit.booking.BookingState.FUTURE;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ExtendWith(MockitoExtension.class)
@@ -50,101 +51,91 @@ class BookingServiceTest {
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdOrderByStartDesc() {
-        service.getAllByBooker(1L, "ALL", null);
+        service.getAllByBooker(1L, ALL, null);
         verify(repo).findAllByBookerIdOrderByStartDesc(anyLong(), any());
     }
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc() {
-        service.getAllByBooker(1L, "CURRENT", null);
+        service.getAllByBooker(1L, CURRENT, null);
         verify(repo)
                 .findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(anyLong(), any(), any(), any());
     }
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndEndBeforeOrderByStartDesc() {
-        service.getAllByBooker(1L, "PAST", null);
+        service.getAllByBooker(1L, PAST, null);
         verify(repo)
                 .findAllByBookerIdAndEndBeforeOrderByStartDesc(anyLong(), any(), any());
     }
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStartAfterOrderByStartDesc() {
-        service.getAllByBooker(1L, "FUTURE", null);
+        service.getAllByBooker(1L, FUTURE, null);
         verify(repo)
                 .findAllByBookerIdAndStartAfterOrderByStartDesc(anyLong(), any(), any());
     }
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStatusOrderByStartDescWithStatusWaiting() {
-        service.getAllByBooker(1L, "WAITING", null);
+        service.getAllByBooker(1L, WAITING, null);
         verify(repo)
                 .findAllByBookerIdAndStatusOrderByStartDesc(1, BookingStatus.WAITING, null);
     }
 
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStatusOrderByStartDescWithStatusRejected() {
-        service.getAllByBooker(1L, "REJECTED", null);
+        service.getAllByBooker(1L, REJECTED, null);
         verify(repo)
                 .findAllByBookerIdAndStatusOrderByStartDesc(1L, BookingStatus.REJECTED, null);
     }
 
     @Test
-    void getAllByBooker_shouldThrowUnsupportedStatusException() {
-        assertThatThrownBy(() -> service.getAllByBooker(1L, "ANY", null)).isInstanceOf(UnsupportedStatusException.class);
-    }
-
-    @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdOrderByStartDesc() {
-        service.getAllByOwner(1L, "ALL", null);
+        service.getAllByOwner(1L, ALL, null);
         verify(repo).findAllByItemOwnerIdOrderByStartDesc(anyLong(), any());
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc() {
-        service.getAllByOwner(1L, "CURRENT", null);
+        service.getAllByOwner(1L, CURRENT, null);
         verify(repo)
                 .findAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(anyLong(), any(), any(), any());
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndEndBeforeOrderByStartDesc() {
-        service.getAllByOwner(1L, "PAST", null);
+        service.getAllByOwner(1L, PAST, null);
         verify(repo)
                 .findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(anyLong(), any(), any());
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStartAfterOrderByStartDesc() {
-        service.getAllByOwner(1L, "FUTURE", null);
+        service.getAllByOwner(1L, FUTURE, null);
         verify(repo)
                 .findAllByItemOwnerIdAndStartAfterOrderByStartDesc(anyLong(), any(), any());
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStatusOrderByStartDescWithStatusWaiting() {
-        service.getAllByOwner(1L, "WAITING", null);
+        service.getAllByOwner(1L, WAITING, null);
         verify(repo)
                 .findAllByItemOwnerIdAndStatusOrderByStartDesc(1, BookingStatus.WAITING, null);
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStatusOrderByStartDescWithStatusRejected() {
-        service.getAllByOwner(1L, "REJECTED", null);
+        service.getAllByOwner(1L, REJECTED, null);
         verify(repo)
                 .findAllByItemOwnerIdAndStatusOrderByStartDesc(1, BookingStatus.REJECTED, null);
-    }
-
-    @Test
-    void getAllByOwner_shouldThrowUnsupportedStatusException() {
-        assertThatThrownBy(() -> service.getAllByOwner(1L, "ANY", null)).isInstanceOf(UnsupportedStatusException.class);
     }
 
     @Test
     void create_shouldThrowNotFoundIfUserIsNotExists() {
         long userId = 1L;
         long itemId = 1L;
-        BookingDto dto = new BookingDto(itemId, LocalDateTime.now(), LocalDateTime.now());
+        CreateBookingDto dto = new CreateBookingDto(itemId, LocalDateTime.now(), LocalDateTime.now());
 
         when(userService.getById(userId)).thenThrow(new NotFoundException("user", userId));
 
@@ -155,7 +146,7 @@ class BookingServiceTest {
     void create_shouldThrowNotFoundIfItemIsNotExists() {
         long userId = 1L;
         long itemId = 1L;
-        BookingDto dto = new BookingDto(itemId, LocalDateTime.now(), LocalDateTime.now());
+        CreateBookingDto dto = new CreateBookingDto(itemId, LocalDateTime.now(), LocalDateTime.now());
 
         when(itemRepo.findById(itemId)).thenReturn(Optional.empty());
 
@@ -166,7 +157,7 @@ class BookingServiceTest {
     void create_shouldThrowFieldValidationExceptionIfItemIsUnavailable() {
         long userId = 1L;
         long itemId = 1L;
-        BookingDto dto = new BookingDto(itemId, LocalDateTime.now(), LocalDateTime.now());
+        CreateBookingDto dto = new CreateBookingDto(itemId, LocalDateTime.now(), LocalDateTime.now());
         Item item = TestUtils.makeItem(itemId, false, null);
 
         when(itemRepo.findById(itemId)).thenReturn(Optional.of(item));
@@ -178,7 +169,7 @@ class BookingServiceTest {
     void create_shouldThrowNotFoundIfUserIsNotOwner() {
         long userId = 1L;
         long itemId = 1L;
-        BookingDto dto = new BookingDto(itemId, LocalDateTime.now(), LocalDateTime.now());
+        CreateBookingDto dto = new CreateBookingDto(itemId, LocalDateTime.now(), LocalDateTime.now());
         User user = TestUtils.makeUser(userId);
         Item item = TestUtils.makeItem(itemId, true, user);
 
@@ -191,7 +182,7 @@ class BookingServiceTest {
     void create_shouldThrowFieldValidationExceptionIfDateIsIncorrect() {
         long userId = 1L;
         long itemId = 1L;
-        BookingDto dto = new BookingDto(itemId, LocalDateTime.now(), LocalDateTime.now().minusDays(1));
+        CreateBookingDto dto = new CreateBookingDto(itemId, LocalDateTime.now(), LocalDateTime.now().minusDays(1));
         User user = TestUtils.makeUser(2L);
         Item item = TestUtils.makeItem(itemId, true, user);
 
@@ -205,9 +196,9 @@ class BookingServiceTest {
         long userId = 1L;
         long itemId = 1L;
 
-        BookingDto dto = new BookingDto(itemId, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2));
-        BookingDto dto2 = new BookingDto(itemId, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4));
-        BookingDto dto3 = new BookingDto(itemId, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4));
+        CreateBookingDto dto = new CreateBookingDto(itemId, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2));
+        CreateBookingDto dto2 = new CreateBookingDto(itemId, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4));
+        CreateBookingDto dto3 = new CreateBookingDto(itemId, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4));
 
         User user = TestUtils.makeUser(2L);
         Item item = TestUtils.makeItem(itemId, true, user);
@@ -225,7 +216,7 @@ class BookingServiceTest {
         List<Booking> bookings = List.of(booking, booking2);
         when(itemService.getAllBookings(itemId)).thenReturn(bookings);
         assertThatThrownBy(() -> service.create(userId, dto3)).isInstanceOf(FieldValidationException.class);
-        BookingDto dto4 = new BookingDto(itemId, LocalDateTime.now().plusDays(5), LocalDateTime.now().plusDays(6));
+        CreateBookingDto dto4 = new CreateBookingDto(itemId, LocalDateTime.now().plusDays(5), LocalDateTime.now().plusDays(6));
         Booking booking4 = service.create(userId, dto4);
 
         assertThat(booking4).isInstanceOf(Booking.class);

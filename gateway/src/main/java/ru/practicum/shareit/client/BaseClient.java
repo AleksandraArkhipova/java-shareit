@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shareit.exception.client;
+package ru.practicum.shareit.client;
 
 
 import org.springframework.http.HttpEntity;

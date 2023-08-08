@@ -1,27 +1,17 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.*;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Builder
 @EqualsAndHashCode
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateItemDto {
-    @NotBlank(message = "Name is required")
     String name;
-
-    @NotBlank(message = "Description is required")
     String description;
-
-    @NotNull(message = "Available is required")
     Boolean available;
-
-    @Positive(message = "RequestId must be positive")
     Long requestId;
 }

@@ -1,15 +1,13 @@
 package ru.practicum.shareit.comment.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.NotBlank;
-
-@Data
+@Getter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateCommentDto {
-    @NotBlank(message = "Text is required")
-    private String text;
+    String text;
 }

@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.dto.CreateCommentDto;
@@ -14,13 +13,11 @@ import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.core.pagination.PaginationMapper;
 
-import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Validated
 @RequestMapping("/items")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ItemController {
@@ -52,14 +49,14 @@ public class ItemController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ItemDto create(@RequestHeader(required = false, name = USER_ID_HEADER) Long userId,
-                          @Valid @RequestBody CreateItemDto dto) {
+                          @RequestBody CreateItemDto dto) {
         return service.create(userId, dto);
     }
 
     @PatchMapping("/{id}")
     public ItemDto update(
             @PathVariable long id, @RequestHeader(required = false, name = USER_ID_HEADER) Long userId,
-            @Valid @RequestBody UpdateItemDto dto
+            @RequestBody UpdateItemDto dto
     ) {
         return service.update(id, userId, dto);
     }
@@ -73,7 +70,7 @@ public class ItemController {
     public CommentDto comment(
             @PathVariable long id,
             @RequestHeader(name = USER_ID_HEADER) long userId,
-            @Valid @RequestBody CreateCommentDto dto
+            @RequestBody CreateCommentDto dto
     ) {
         return service.comment(id, userId, dto);
     }

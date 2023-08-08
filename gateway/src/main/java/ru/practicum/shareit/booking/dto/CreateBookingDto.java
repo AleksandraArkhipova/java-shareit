@@ -1,9 +1,9 @@
-package ru.yandex.practicum.shareit.booking.dto;
+package ru.practicum.shareit.booking.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.shareit.booking.StartBeforeEndDateValid;
+import ru.practicum.shareit.booking.StartBeforeEndDateValid;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;

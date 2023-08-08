@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.comment.dto.CreateCommentDto;
 import ru.practicum.shareit.core.exception.FieldValidationException;
 import ru.practicum.shareit.core.exception.NotFoundException;
 import ru.practicum.shareit.utils.TestUtils;
@@ -19,7 +20,6 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.comment.CommentMapper;
 import ru.practicum.shareit.comment.CommentJpaRepository;
 import ru.practicum.shareit.comment.dto.CommentDto;
-import ru.practicum.shareit.comment.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.CreateItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
@@ -261,7 +261,7 @@ class ItemServiceTest {
         List<Item> items = List.of(TestUtils.makeItem(1L, true, user),
                 TestUtils.makeItem(2L, true, user));
 
-        when(repo.findAllByOwnerId(1L, null)).thenReturn(items);
+        when(repo.findAllByOwnerIdOrderById(1L, null)).thenReturn(items);
 
         assertThat(service.getByUserId(1L, null)).hasAtLeastOneElementOfType(ItemDto.class);
 

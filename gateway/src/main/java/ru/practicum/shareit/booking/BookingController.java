@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shareit.booking;
+package ru.practicum.shareit.booking;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.yandex.practicum.shareit.booking.dto.BookingState;
-import ru.yandex.practicum.shareit.booking.dto.CreateBookingDto;
+import ru.practicum.shareit.booking.dto.CreateBookingDto;
+import ru.practicum.shareit.booking.dto.BookingState;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;

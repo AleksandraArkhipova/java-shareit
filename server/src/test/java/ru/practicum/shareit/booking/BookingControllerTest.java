@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.core.exception.ExceptionsHandler;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.CreateBookingDto;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -87,15 +87,12 @@ class BookingControllerTest {
         long bookingId = 1L;
         long bookerId = 1L;
 
-        BookingDto bookingDto = new BookingDto(1L, null, null);
-        String json = objectMapper.writeValueAsString(bookingDto);
-
-        mockMvc.perform(post("/bookings").contentType(MediaType.APPLICATION_JSON).header(USER_ID_HEADER, bookerId).content(String.valueOf("")))
+        mockMvc.perform(post("/bookings").contentType(MediaType.APPLICATION_JSON).header(USER_ID_HEADER, bookerId))
                 .andExpect(status().is5xxServerError());
 
         Booking booking = new Booking(bookingId, null, null, null, null, null);
-        bookingDto = new BookingDto(1L, LocalDateTime.now(), LocalDateTime.now());
-        json = objectMapper.writeValueAsString(bookingDto);
+        CreateBookingDto bookingDto = new CreateBookingDto(1L, LocalDateTime.now(), LocalDateTime.now());
+        String json = objectMapper.writeValueAsString(bookingDto);
 
         when(bookingService.create(anyLong(), any())).thenReturn(booking);
 

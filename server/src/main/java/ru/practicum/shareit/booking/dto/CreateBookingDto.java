@@ -1,22 +1,19 @@
 package ru.practicum.shareit.booking.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDto {
-    @NotNull(message = "ItemId is required")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class CreateBookingDto {
     Long itemId;
-
-    @NotNull(message = "Start is required")
     LocalDateTime start;
-
-    @NotNull(message = "End is required")
     LocalDateTime end;
 }

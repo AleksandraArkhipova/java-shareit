@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shareit.booking.dto;
+package ru.practicum.shareit.booking.dto;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shareit.user;
+package ru.practicum.shareit.user;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.yandex.practicum.shareit.user.dto.CreateUserDto;
-import ru.yandex.practicum.shareit.user.dto.UpdateUserDto;
+import ru.practicum.shareit.user.dto.CreateUserDto;
+import ru.practicum.shareit.user.dto.UpdateUserDto;
 
 import javax.validation.Valid;
 

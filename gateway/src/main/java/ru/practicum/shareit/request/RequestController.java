@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shareit.request;
+package ru.practicum.shareit.request;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.yandex.practicum.shareit.request.dto.CreateRequestDto;
+import ru.practicum.shareit.request.dto.CreateRequestDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;

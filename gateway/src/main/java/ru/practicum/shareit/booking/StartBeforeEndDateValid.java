@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shareit.booking;
+package ru.practicum.shareit.booking;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

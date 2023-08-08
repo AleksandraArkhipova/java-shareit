@@ -1,4 +1,4 @@
-package ru.yandex.practicum.shareit.item.dto;
+package ru.practicum.shareit.item.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
